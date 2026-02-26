@@ -1,28 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Personal Productivity Dashboard</title>
-  <style>
-    body {
-      font-family: Arial;
-      background: #121212;
-      color: white;
-      text-align: center;
-      margin-top: 100px;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      margin-top: 20px;
-      cursor: pointer;
-    }
-  </style>
+  <title>Productivity Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>🚀 Personal Productivity Dashboard</h1>
-  <p>Let’s build something powerful.</p>
-  <button onclick="alert('Focus Mode Activated 🔥')">
-    Start Focus
-  </button>
+  <h1>My Tasks</h1>
+
+  <input id="taskInput" placeholder="Task title" />
+  <select id="priority">
+    <option value="LOW">Low</option>
+    <option value="MEDIUM">Medium</option>
+    <option value="HIGH">High</option>
+  </select>
+  <button onclick="addTask()">Add Task</button>
+
+  <ul id="taskList"></ul>
+
+  <script src="renderer.js"></script>
 </body>
 </html>
