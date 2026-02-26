@@ -96,3 +96,7 @@ li {
   background: #ef4444;
   color: white;
 }
+.overdue {
+  color: #ef4444;
+  font-weight: bold;
+}
