@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow ,Menu} = require("electron");
 const path = require("path");
 
 function createWindow() {
@@ -9,7 +9,7 @@ function createWindow() {
       contextIsolation: true
     }
   });
-
+  Menu.setApplicationMenu(null);
   win.loadFile("index.html");
 }
 
