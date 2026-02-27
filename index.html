@@ -5,19 +5,239 @@
   <link rel="stylesheet" href="style.css">
   <meta charset="UTF-8">
 </head>
-<body>
-  <h1>My Tasks</h1>
+<body data-theme="dark">
 
-  <input id="taskInput" placeholder="Task title" />
-  <input type="date" id="dueDate" />
-  <select id="priority">
-    <option value="LOW">Low</option>
-    <option value="MEDIUM">Medium</option>
-    <option value="HIGH">High</option>
-  </select>
-  <button onclick="addTask()">Add Task</button>
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside id="sidebar">
+    <div class="sidebar-brand">
+      <span class="brand-icon">⚡</span>
+      <span class="brand-text">ProductivityHQ</span>
+    </div>
+    <nav>
+      <button class="nav-btn active" data-section="dashboard" onclick="switchSection('dashboard')">
+        <span class="nav-icon">📊</span> Dashboard
+      </button>
+      <button class="nav-btn" data-section="tasks" onclick="switchSection('tasks')">
+        <span class="nav-icon">✅</span> Tasks
+      </button>
+      <button class="nav-btn" data-section="pomodoro" onclick="switchSection('pomodoro')">
+        <span class="nav-icon">🍅</span> Pomodoro
+      </button>
+      <button class="nav-btn" data-section="habits" onclick="switchSection('habits')">
+        <span class="nav-icon">🔥</span> Habits
+      </button>
+      <button class="nav-btn" data-section="notes" onclick="switchSection('notes')">
+        <span class="nav-icon">📝</span> Notes
+      </button>
+    </nav>
+    <div class="sidebar-footer">
+      <button class="theme-toggle" onclick="toggleTheme()" title="Toggle theme">
+        <span id="themeIcon">🌙</span>
+      </button>
+    </div>
+  </aside>
 
-  <ul id="taskList"></ul>
+  <!-- ═══ MAIN CONTENT ═══ -->
+  <main id="mainContent">
+
+    <!-- ── DASHBOARD ── -->
+    <section id="sec-dashboard" class="section active">
+      <h1>Dashboard</h1>
+      <div class="date-display" id="currentDate"></div>
+
+      <!-- Stats Cards -->
+      <div class="stats-grid">
+        <div class="stat-card stat-blue">
+          <div class="stat-number" id="statTotal">0</div>
+          <div class="stat-label">Total Tasks</div>
+        </div>
+        <div class="stat-card stat-green">
+          <div class="stat-number" id="statDone">0</div>
+          <div class="stat-label">Completed</div>
+        </div>
+        <div class="stat-card stat-red">
+          <div class="stat-number" id="statOverdue">0</div>
+          <div class="stat-label">Overdue</div>
+        </div>
+        <div class="stat-card stat-orange">
+          <div class="stat-number" id="statPomodoros">0</div>
+          <div class="stat-label">Pomodoro Sessions</div>
+        </div>
+        <div class="stat-card stat-purple">
+          <div class="stat-number" id="statStreak">0</div>
+          <div class="stat-label">Best Habit Streak</div>
+        </div>
+        <div class="stat-card stat-teal">
+          <div class="stat-number" id="statNotes">0</div>
+          <div class="stat-label">Notes</div>
+        </div>
+      </div>
+
+      <!-- Progress bar -->
+      <div class="progress-section">
+        <h3>Task Completion</h3>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progressFill"></div>
+        </div>
+        <span class="progress-text" id="progressText">0%</span>
+      </div>
+
+      <!-- Upcoming tasks -->
+      <div class="dashboard-panels">
+        <div class="panel">
+          <h3>📌 Upcoming Tasks</h3>
+          <ul id="upcomingTasks" class="mini-list"></ul>
+        </div>
+        <div class="panel">
+          <h3>🔥 Today's Habits</h3>
+          <ul id="todayHabits" class="mini-list"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TASKS ── -->
+    <section id="sec-tasks" class="section">
+      <h1>Tasks</h1>
+
+      <!-- Add task form -->
+      <div class="task-form">
+        <input id="taskInput" placeholder="What needs to be done?" />
+        <input type="date" id="dueDate" />
+        <select id="priority">
+          <option value="LOW">Low</option>
+          <option value="MEDIUM" selected>Medium</option>
+          <option value="HIGH">High</option>
+        </select>
+        <select id="taskCategory">
+          <option value="General">General</option>
+          <option value="Work">Work</option>
+          <option value="Personal">Personal</option>
+          <option value="Study">Study</option>
+          <option value="Health">Health</option>
+        </select>
+        <button class="btn btn-primary" onclick="addTask()">+ Add Task</button>
+      </div>
+
+      <!-- Filters -->
+      <div class="filter-bar">
+        <input id="taskSearch" placeholder="🔍 Search tasks..." oninput="renderTasks()" />
+        <select id="filterStatus" onchange="renderTasks()">
+          <option value="all">All</option>
+          <option value="active">Active</option>
+          <option value="completed">Completed</option>
+          <option value="overdue">Overdue</option>
+        </select>
+        <select id="filterPriority" onchange="renderTasks()">
+          <option value="all">All Priorities</option>
+          <option value="HIGH">High</option>
+          <option value="MEDIUM">Medium</option>
+          <option value="LOW">Low</option>
+        </select>
+        <select id="filterCategory" onchange="renderTasks()">
+          <option value="all">All Categories</option>
+          <option value="General">General</option>
+          <option value="Work">Work</option>
+          <option value="Personal">Personal</option>
+          <option value="Study">Study</option>
+          <option value="Health">Health</option>
+        </select>
+        <button class="btn btn-danger btn-sm" onclick="clearCompleted()">Clear Done</button>
+      </div>
+
+      <ul id="taskList"></ul>
+    </section>
+
+    <!-- ── POMODORO ── -->
+    <section id="sec-pomodoro" class="section">
+      <h1>Pomodoro Timer</h1>
+      <div class="pomodoro-container">
+        <div class="timer-ring" id="timerRing">
+          <div class="timer-display" id="timerDisplay">25:00</div>
+        </div>
+        <div class="timer-label" id="timerLabel">Focus Time</div>
+        <div class="timer-controls">
+          <button class="btn btn-primary btn-lg" id="pomStartBtn" onclick="pomodoroStartPause()">▶ Start</button>
+          <button class="btn btn-secondary btn-lg" onclick="pomodoroReset()">↺ Reset</button>
+        </div>
+        <div class="pom-settings">
+          <label>Work: <input type="number" id="pomWorkMin" value="25" min="1" max="60" onchange="pomodoroUpdateSettings()"> min</label>
+          <label>Break: <input type="number" id="pomBreakMin" value="5" min="1" max="30" onchange="pomodoroUpdateSettings()"> min</label>
+        </div>
+        <div class="pom-stats">
+          <div class="pom-stat">
+            <span class="pom-stat-num" id="pomTodaySessions">0</span>
+            <span class="pom-stat-label">Today's Sessions</span>
+          </div>
+          <div class="pom-stat">
+            <span class="pom-stat-num" id="pomTotalMin">0</span>
+            <span class="pom-stat-label">Total Minutes</span>
+          </div>
+        </div>
+        <div class="pom-history">
+          <h3>Recent Sessions</h3>
+          <ul id="pomHistory" class="mini-list"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── HABITS ── -->
+    <section id="sec-habits" class="section">
+      <h1>Habit Tracker</h1>
+      <div class="habit-form">
+        <input id="habitInput" placeholder="New habit (e.g. Exercise 30 min)" />
+        <select id="habitFrequency">
+          <option value="daily">Daily</option>
+          <option value="weekly">Weekly</option>
+        </select>
+        <button class="btn btn-primary" onclick="addHabit()">+ Add Habit</button>
+      </div>
+
+      <div id="habitList" class="habit-grid"></div>
+    </section>
+
+    <!-- ── NOTES ── -->
+    <section id="sec-notes" class="section">
+      <h1>Quick Notes</h1>
+      <div class="notes-form">
+        <input id="noteTitle" placeholder="Note title" />
+        <select id="noteColor">
+          <option value="blue">Blue</option>
+          <option value="green">Green</option>
+          <option value="yellow">Yellow</option>
+          <option value="pink">Pink</option>
+          <option value="purple">Purple</option>
+        </select>
+        <button class="btn btn-primary" onclick="addNote()">+ Add Note</button>
+      </div>
+      <div id="notesList" class="notes-grid"></div>
+    </section>
+
+  </main>
+
+  <!-- ═══ EDIT TASK MODAL ═══ -->
+  <div id="editModal" class="modal-overlay" style="display:none">
+    <div class="modal">
+      <h2>Edit Task</h2>
+      <input id="editTitle" placeholder="Task title" />
+      <input type="date" id="editDueDate" />
+      <select id="editPriority">
+        <option value="LOW">Low</option>
+        <option value="MEDIUM">Medium</option>
+        <option value="HIGH">High</option>
+      </select>
+      <select id="editCategory">
+        <option value="General">General</option>
+        <option value="Work">Work</option>
+        <option value="Personal">Personal</option>
+        <option value="Study">Study</option>
+        <option value="Health">Health</option>
+      </select>
+      <div class="modal-actions">
+        <button class="btn btn-primary" onclick="saveEdit()">Save</button>
+        <button class="btn btn-secondary" onclick="closeEditModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
 
   <script src="renderer.js"></script>
 </body>
